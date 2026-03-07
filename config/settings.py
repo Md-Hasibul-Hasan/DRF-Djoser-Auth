@@ -29,6 +29,30 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Frontend Url for CORS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+]
+
+
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+
+DOMAIN = 'localhost:5173'
+SITE_NAME = 'localhost:5173'
+
+# Custom User Model
+AUTH_USER_MODEL = 'auth_api.User'
+
 
 # Application definition
 
@@ -40,10 +64,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'djoser', 
+    # 'social_django',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'auth_api',
+     'rest_framework_simplejwt.token_blacklist',
     # 'django.contrib.sites',
 ]
 # SITE_ID = 1
@@ -141,16 +168,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # =============================================
 
-# Frontend Url for CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-
-]
-
-# Custom User Model
-AUTH_USER_MODEL = 'auth_api.User'
-
 
 # REST Framework & JWT Configuration
 REST_FRAMEWORK = {
@@ -168,8 +185,8 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
-    # 'BLACKLIST_AFTER_ROTATION': True, # To enable : install 'rest_framework_simplejwt.token_blacklist' app
-    # 'UPDATE_LAST_LOGIN': False,
+    'BLACKLIST_AFTER_ROTATION': True, # To enable : install 'rest_framework_simplejwt.token_blacklist' app
+    'UPDATE_LAST_LOGIN': True,
 }
 
 
@@ -184,6 +201,7 @@ DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'activate/{uid}/{token}',
 
+
     # -------- Email Notifications --------
     'SEND_CONFIRMATION_EMAIL': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
@@ -191,16 +209,18 @@ DJOSER = {
     # -------- Password Reset --------
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
     'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
 
     # -------- Serializers --------
     'SERIALIZERS': {
         'user_create': 'auth_api.serializers.UserCreateSerializer',
-        'user': 'auth_api.serializers.UserCreateSerializer',
+        'user': 'auth_api.serializers.UserSerializer',
+        'current_user': 'auth_api.serializers.UserSerializer',
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
     },
 
-    # -------- Email Classes (THIS WAS WRONG BEFORE) --------
+    # -------- Email Classes --------
     'EMAIL': {
         'activation': 'auth_api.email.ActivationEmail',
         'confirmation': 'auth_api.email.ConfirmationEmail',
@@ -219,10 +239,10 @@ DJOSER = {
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER =  os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')     
-DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_FROM')
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER =  os.environ.get('EMAIL_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')     
+# DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_FROM')
