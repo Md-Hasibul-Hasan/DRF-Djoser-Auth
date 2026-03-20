@@ -17,7 +17,7 @@ class GoogleLoginView(APIView):
 
         if not access_token:
             return Response(
-                {'error': 'access_token দাও'},
+                {'error': 'access_token required'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -39,7 +39,7 @@ class GoogleLoginView(APIView):
 
         if not email:
             return Response(
-                {'error': 'Google account এ email নেই'},
+                {'error': 'Google account does not have email'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
